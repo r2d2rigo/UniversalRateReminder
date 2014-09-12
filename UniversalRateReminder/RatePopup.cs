@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Store;
 using Windows.Storage;
 using Windows.System;
@@ -117,7 +118,26 @@ namespace UniversalRateReminder
                     MessageDialog dialog = new MessageDialog(Content, Title);
                     dialog.Commands.Add(new UICommand(RateButtonText, (command) =>
                     {
-                        Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + CurrentApp.AppId));
+                        bool runningOnPhone = true;
+
+                        // Ugly hack for detecting running platform at runtime
+                        try
+                        {
+                            object brush = Windows.UI.Xaml.Application.Current.Resources["PhoneAccentBrush"];
+                        }
+                        catch (Exception e)
+                        {
+                            runningOnPhone = false;
+                        }
+
+                        if (runningOnPhone)
+                        {
+                            Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + CurrentApp.AppId));
+                        }
+                        else
+                        {
+                            Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
+                        }
 
                         reminderContainer.Values[DismissedPropertyName] = true;
                     }));
