@@ -1,0 +1,150 @@
+﻿using System;
+using Windows.ApplicationModel.Store;
+using Windows.Storage;
+using Windows.System;
+using Windows.UI.Popups;
+
+namespace UniversalRateReminder
+{
+    /// <summary>
+    /// A static class for showing a pop up for rating the app after the app has been launched a specific number of times.
+    /// </summary>
+    public static class RatePopup
+    {
+        /// <summary>
+        /// Name of the container for holding the settings.
+        /// </summary>
+        private static readonly string UniversalRateReminderContainerName = "UniversalRateReminder";
+
+        /// <summary>
+        /// Launch count setting property name.
+        /// </summary>
+        private static readonly string CountPropertyName = "Count";
+
+        /// <summary>
+        /// Dismissed setting property name.
+        /// </summary>
+        private static readonly string DismissedPropertyName = "Dismissed";
+
+        /// <summary>
+        /// Container for saving the settings.
+        /// </summary>
+        private static ApplicationDataContainer reminderContainer;
+
+        /// <summary>
+        /// The default number of times the application needs to be launched before showing the reminder. The default value is 5.
+        /// </summary>
+        public static readonly int DefaultLaunchLimitForReminder = 5;
+
+        /// <summary>
+        /// The title for the rate pop up. The default value is "Rate us!".
+        /// </summary>
+        public static string Title
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text content for the rate pop up. The default value is "Your feedback helps you improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.".
+        /// </summary>
+        public static string Content
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text for the rate button. The default value is "rate 5 stars".
+        /// </summary>
+        public static string RateButtonText
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text for the cancel button. The default value is "no, thanks".
+        /// </summary>
+        public static string CancelButtonText
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The number of times the applications needs to be launched before showing the reminder. The default value is <see cref="RatePopup.DefaultLaunchLimitForReminder"/>.
+        /// </summary>
+        public static int LaunchLimit
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Static constructor for initializing default values.
+        /// </summary>
+        static RatePopup()
+        {
+            Title = "Rate us!";
+            Content = "Your feedback helps you improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
+            RateButtonText = "rate 5 stars";
+            CancelButtonText = "no, thanks";
+            LaunchLimit = DefaultLaunchLimitForReminder;
+
+            if (!ApplicationData.Current.LocalSettings.Containers.ContainsKey(UniversalRateReminderContainerName))
+            {
+                ResetLaunchCount();
+            }
+
+            reminderContainer = ApplicationData.Current.LocalSettings.Containers[UniversalRateReminderContainerName];
+        }
+
+        /// <summary>
+        /// Increments the launch counter and if it is equal or greater than the current value of <see cref="RatePopup.LaunchCount"/>, shows the rating pop up. A flag will be set
+        /// so the dialog only shows once.
+        /// </summary>
+        public static void CheckRateReminder()
+        {
+            if (((bool)reminderContainer.Values[DismissedPropertyName]) == false)
+            {
+                int launchCount = (int)reminderContainer.Values[CountPropertyName];
+                launchCount++;
+                reminderContainer.Values[CountPropertyName] = launchCount;
+
+                if (launchCount >= LaunchLimit)
+                {
+                    MessageDialog dialog = new MessageDialog(Content, Title);
+                    dialog.Commands.Add(new UICommand(RateButtonText, (command) =>
+                    {
+                        Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + CurrentApp.AppId));
+
+                        reminderContainer.Values[DismissedPropertyName] = true;
+                    }));
+                    dialog.Commands.Add(new UICommand(CancelButtonText, (command) =>
+                    {
+                        reminderContainer.Values[DismissedPropertyName] = true;
+                    }));
+                    dialog.CancelCommandIndex = 1;
+                    dialog.DefaultCommandIndex = 0;
+                    dialog.ShowAsync();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resets the stored launch count to zero, and resets the flag that prevents the pop up from showing more than once.
+        /// </summary>
+        public static void ResetLaunchCount()
+        {
+            if (ApplicationData.Current.LocalSettings.Containers.ContainsKey(UniversalRateReminderContainerName))
+            {
+                ApplicationData.Current.LocalSettings.DeleteContainer(UniversalRateReminderContainerName);
+            }
+
+            reminderContainer = ApplicationData.Current.LocalSettings.CreateContainer(UniversalRateReminderContainerName, ApplicationDataCreateDisposition.Always);
+            reminderContainer.Values.Add(CountPropertyName, (int)0);
+            reminderContainer.Values.Add(DismissedPropertyName, (bool)false);
+        }
+    }
+}
