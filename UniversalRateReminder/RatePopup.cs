@@ -37,6 +37,12 @@ namespace UniversalRateReminder
         /// </summary>
         public static readonly int DefaultLaunchLimitForReminder = 5;
 
+
+        /// <summary>
+        /// App version property name
+        /// </summary>
+        private static readonly string AppVersionPropertyName = "AppVersion";
+
         /// <summary>
         /// The title for the rate pop up. The default value is "Rate us!".
         /// </summary>
@@ -73,10 +79,20 @@ namespace UniversalRateReminder
             set;
         }
 
+
         /// <summary>
         /// The number of times the applications needs to be launched before showing the reminder. The default value is <see cref="RatePopup.DefaultLaunchLimitForReminder"/>.
         /// </summary>
         public static int LaunchLimit
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Allows developer to reset the launch count when a new version is released
+        /// </summary>
+        public static bool ResetCountOnNewVersion
         {
             get;
             set;
@@ -107,8 +123,17 @@ namespace UniversalRateReminder
         /// </summary>
         public static void CheckRateReminder()
         {
+            // We need to check the app version and for the new version reset regardless if they said no on a prior version
+            string currentAppversion = GetAppVersion();
+            string storedAppVersion = (string)reminderContainer.Values[AppVersionPropertyName];
+            if (currentAppversion != storedAppVersion && ResetCountOnNewVersion == true)
+            {
+                ResetLaunchCount();
+            }
             if (((bool)reminderContainer.Values[DismissedPropertyName]) == false)
             {
+                reminderContainer.Values[AppVersionPropertyName] = currentAppversion;
+
                 int launchCount = (int)reminderContainer.Values[CountPropertyName];
                 launchCount++;
                 reminderContainer.Values[CountPropertyName] = launchCount;
@@ -165,6 +190,20 @@ namespace UniversalRateReminder
             reminderContainer = ApplicationData.Current.LocalSettings.CreateContainer(UniversalRateReminderContainerName, ApplicationDataCreateDisposition.Always);
             reminderContainer.Values.Add(CountPropertyName, (int)0);
             reminderContainer.Values.Add(DismissedPropertyName, (bool)false);
+        }
+
+        /// <summary>
+        /// Get's the application version
+        /// </summary>
+        public static string GetAppVersion()
+        {
+            PackageVersion pv = Package.Current.Id.Version;
+            Version version = new Version(Package.Current.Id.Version.Major,
+                Package.Current.Id.Version.Minor,
+                Package.Current.Id.Version.Revision,
+                Package.Current.Id.Version.Build);
+            string appVersion = version.Major + "." + version.Minor + "." + version.MinorRevision + "." + version.Build;
+            return appVersion;
         }
     }
 }
