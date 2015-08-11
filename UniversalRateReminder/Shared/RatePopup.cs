@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Store;
 using Windows.Storage;
@@ -79,7 +80,6 @@ namespace UniversalRateReminder
             set;
         }
 
-
         /// <summary>
         /// The number of times the applications needs to be launched before showing the reminder. The default value is <see cref="RatePopup.DefaultLaunchLimitForReminder"/>.
         /// </summary>
@@ -93,6 +93,60 @@ namespace UniversalRateReminder
         /// Allows developer to reset the launch count when a new version is released
         /// </summary>
         public static bool ResetCountOnNewVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// If the users dismisses the rate dialog, displays a second one asking for feedback
+        /// </summary>
+        public static bool AskForFeedback
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Contact email address for sending feedback
+        /// </summary>
+        public static string ContactEmail
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The title for the rate pop up. The default value is "Rate us!".
+        /// </summary>
+        public static string FeedbackTitle
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text content for the rate pop up. The default value is "Your feedback helps you improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.".
+        /// </summary>
+        public static string FeedbackContent
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text for the rate button. The default value is "rate 5 stars".
+        /// </summary>
+        public static string RateButtonText
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The text for the cancel button. The default value is "no, thanks".
+        /// </summary>
+        public static string CancelButtonText
         {
             get;
             set;
@@ -121,7 +175,7 @@ namespace UniversalRateReminder
         /// Increments the launch counter and if it is equal or greater than the current value of <see cref="RatePopup.LaunchCount"/>, shows the rating pop up. A flag will be set
         /// so the dialog only shows once.
         /// </summary>
-        public static void CheckRateReminder()
+        public static async Task CheckRateReminderAsync()
         {
             // We need to check the app version and for the new version reset regardless if they said no on a prior version
             string currentAppversion = GetAppVersion();
@@ -130,6 +184,7 @@ namespace UniversalRateReminder
             {
                 ResetLaunchCount();
             }
+
             if (((bool)reminderContainer.Values[DismissedPropertyName]) == false)
             {
                 reminderContainer.Values[AppVersionPropertyName] = currentAppversion;
@@ -140,8 +195,9 @@ namespace UniversalRateReminder
 
                 if (launchCount >= LaunchLimit)
                 {
-                    MessageDialog dialog = new MessageDialog(Content, Title);
-                    dialog.Commands.Add(new UICommand(RateButtonText, (command) =>
+                    MessageDialog rateDialog = new MessageDialog(Content, Title);
+
+                    var rateCommand = new UICommand(RateButtonText, (command) =>
                     {
 #if WINDOWS_UWP
                         Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?productid=" + Package.Current.Id.FamilyName));
@@ -168,14 +224,55 @@ namespace UniversalRateReminder
                         }
 #endif
                         reminderContainer.Values[DismissedPropertyName] = true;
-                    }));
-                    dialog.Commands.Add(new UICommand(CancelButtonText, (command) =>
+                    });
+
+                    var dismissCommand = new UICommand(CancelButtonText, (command) =>
                     {
                         reminderContainer.Values[DismissedPropertyName] = true;
-                    }));
-                    dialog.CancelCommandIndex = 1;
-                    dialog.DefaultCommandIndex = 0;
-                    dialog.ShowAsync();
+                    });
+                    
+                    rateDialog.Commands.Add(rateCommand);
+                    rateDialog.Commands.Add(dismissCommand);
+
+                    rateDialog.CancelCommandIndex = 1;
+                    rateDialog.DefaultCommandIndex = 0;
+
+                    var rateResult = await rateDialog.ShowAsync();
+
+                    if (rateResult == dismissCommand)
+                    {
+                        MessageDialog feedbackDialog = new MessageDialog(Content, Title);
+
+                        var rateCommand = new UICommand(RateButtonText, (command) =>
+                        {
+#if WINDOWS_UWP
+                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?productid=" + Package.Current.Id.FamilyName));
+#else
+                            bool runningOnPhone = true;
+
+                            // Ugly hack for detecting running platform at runtime
+                            try
+                            {
+                                object brush = Windows.UI.Xaml.Application.Current.Resources["PhoneAccentBrush"];
+                            }
+                            catch (Exception e)
+                            {
+                                runningOnPhone = false;
+                            }
+
+                            if (runningOnPhone)
+                            {
+                                Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + CurrentApp.AppId));
+                            }
+                            else
+                            {
+                                Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
+                            }
+#endif
+                            reminderContainer.Values[DismissedPropertyName] = true;
+                        });
+
+                    }
                 }
             }
         }
