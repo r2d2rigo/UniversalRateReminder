@@ -104,7 +104,7 @@ namespace UniversalRateReminder
         static RatePopup()
         {
             Title = "Rate us!";
-            Content = "Your feedback helps you improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
+            Content = "Your feedback helps us improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
             RateButtonText = "rate 5 stars";
             CancelButtonText = "no, thanks";
             LaunchLimit = DefaultLaunchLimitForReminder;
