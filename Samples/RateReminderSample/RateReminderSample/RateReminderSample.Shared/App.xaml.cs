@@ -106,6 +106,7 @@ namespace RateReminderSample
             Window.Current.Activate();
 
             RatePopup.LaunchLimit = 1;
+            RatePopup.ResetCountOnNewVersion = false;
             RatePopup.RateButtonText = "rate";
             RatePopup.CancelButtonText = "cancel";
             RatePopup.Title = "Rate app";

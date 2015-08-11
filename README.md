@@ -24,9 +24,10 @@ Add the reference to both projects and at the end of the **OnLaunched** function
 
 This will increment the counter that stores the number of times that the app has launched and will show the pop up asking the user for rating.
 
-You can customize the title, text, rate button text, cancel button text and number of times the application must run before showing the pop up; just assign them before calling **CheckRateReminder**:
+You can customize the title, text, rate button text, cancel button text, if you want to reset the count on a new version, and number of times the application must run before showing the pop up; just assign them before calling **CheckRateReminder**:
 
     RatePopup.LaunchLimit = 1;
+    RatePopup.ResetCountOnNewVersion = false;
     RatePopup.RateButtonText = "rate";
     RatePopup.CancelButtonText = "cancel";
     RatePopup.Title = "Rate app";
