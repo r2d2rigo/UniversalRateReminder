@@ -143,6 +143,9 @@ namespace UniversalRateReminder
                     MessageDialog dialog = new MessageDialog(Content, Title);
                     dialog.Commands.Add(new UICommand(RateButtonText, (command) =>
                     {
+#if WINDOWS_UWP
+                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?productid=" + Package.Current.Id.FamilyName));
+#else
                         bool runningOnPhone = true;
 
                         // Ugly hack for detecting running platform at runtime
@@ -163,7 +166,7 @@ namespace UniversalRateReminder
                         {
                             Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
                         }
-
+#endif
                         reminderContainer.Values[DismissedPropertyName] = true;
                     }));
                     dialog.Commands.Add(new UICommand(CancelButtonText, (command) =>
