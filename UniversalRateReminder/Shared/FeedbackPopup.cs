@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Store;
-using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
 
@@ -21,7 +18,7 @@ namespace UniversalRateReminder
         /// <summary>
         /// Default content for feedback pop up.
         /// </summary>
-        private const string DefaultContent = "We are sorry you don't want to rate the application. Would you like to send us some valuable feedback?";
+        private const string DefaultContent = "We are sorry you don't want to rate the application. Would you like to send us an email with some valuable feedback?";
 
         /// <summary>
         /// The title for the feedback pop up. The default value is <see cref="FeedbackPopup.DefaultTitle"/>.
@@ -60,6 +57,33 @@ namespace UniversalRateReminder
         }
 
         /// <summary>
+        /// The contact email for sending feedback.
+        /// </summary>
+        public static string ContactEmail
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The default email subject.
+        /// </summary>
+        public static string EmailSubject
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The default email body, if any.
+        /// </summary>
+        public static string EmailBody
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Static constructor for initializing default values.
         /// </summary>
         static FeedbackPopup()
@@ -68,6 +92,9 @@ namespace UniversalRateReminder
             Content = DefaultContent;
             SendFeedbackButtonText = "rate 5 stars";
             CancelButtonText = "no, thanks";
+            ContactEmail = string.Empty;
+            EmailSubject = string.Empty;
+            EmailBody = string.Empty;
         }
 
         /// <summary>
@@ -76,24 +103,41 @@ namespace UniversalRateReminder
         /// </summary>
         public static async Task ShowFeedbackDialogAsync()
         {
-            MessageDialog rateDialog = new MessageDialog(Content, Title);
+            MessageDialog feedbackDialog = new MessageDialog(Content, Title);
 
             var feedbackCommand = new UICommand(SendFeedbackButtonText, (command) =>
             {
-                // TODO: send email
+                if (string.IsNullOrWhiteSpace(ContactEmail))
+                {
+                    throw new InvalidOperationException("Please set an email address before calling this method.");
+                }
+
+                if (string.IsNullOrWhiteSpace(EmailSubject))
+                {
+                    throw new InvalidOperationException("Please set an email subject before calling this method.");
+                }
+
+                var mailtoUri = new Uri("mailto:?to=" + ContactEmail + "&subject=" + EmailSubject + "&body=" + EmailBody);
+
+                var launchOptions = new LauncherOptions
+                {
+                    DisplayApplicationPicker = true,
+                };
+
+                Launcher.LaunchUriAsync(mailtoUri, launchOptions);
             });
 
             var dismissCommand = new UICommand(CancelButtonText, (command) =>
             {
             });
 
-            rateDialog.Commands.Add(feedbackCommand);
-            rateDialog.Commands.Add(dismissCommand);
+            feedbackDialog.Commands.Add(feedbackCommand);
+            feedbackDialog.Commands.Add(dismissCommand);
 
-            rateDialog.CancelCommandIndex = 1;
-            rateDialog.DefaultCommandIndex = 0;
+            feedbackDialog.CancelCommandIndex = 1;
+            feedbackDialog.DefaultCommandIndex = 0;
 
-            await rateDialog.ShowAsync();
+            await feedbackDialog.ShowAsync();
         }
     }
 }

@@ -55,6 +55,9 @@
     <Compile Include="..\Shared\RatePopup.cs">
       <Link>RatePopup.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\RateReminderResult.cs">
+      <Link>RateReminderResult.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

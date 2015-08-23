@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using UniversalRateReminder;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Email;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -81,6 +83,11 @@ namespace RateReminderSample
             // Ensure the current window is active
             Window.Current.Activate();
 
+            this.CheckRateReminderAsync();
+        }
+
+        private async Task CheckRateReminderAsync()
+        {
             RatePopup.LaunchLimit = 1;
             RatePopup.ResetCountOnNewVersion = false;
             RatePopup.RateButtonText = "rate";
@@ -88,9 +95,21 @@ namespace RateReminderSample
             RatePopup.Title = "Rate app";
             RatePopup.Content = "Would you like to rate this app?";
 
-            RatePopup.CheckRateReminder();
-        }
+            if (await RatePopup.CheckRateReminderAsync() == RateReminderResult.Dismissed)
+            {
+                FeedbackPopup.ContactEmail = "contact@yourdomain.com";
+                FeedbackPopup.EmailSubject = "Feedback for my app";
+                FeedbackPopup.EmailBody = "Default body";
 
+                FeedbackPopup.Title = "Would you like to send feedback?";
+                FeedbackPopup.Content = "Maybe you want to send us feedback regarding your experience with the app?";
+                FeedbackPopup.SendFeedbackButtonText = "yes, send feedback";
+                FeedbackPopup.CancelButtonText = "no, thanks";
+
+                await FeedbackPopup.ShowFeedbackDialogAsync();
+            }
+        }
+        
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>

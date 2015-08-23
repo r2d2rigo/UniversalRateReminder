@@ -116,8 +116,14 @@
     <None Include="UniversalRateReminderPublicKey.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\FeedbackPopup.cs">
+      <Link>FeedbackPopup.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\RatePopup.cs">
       <Link>RatePopup.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\RateReminderResult.cs">
+      <Link>RateReminderResult.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Properties\UniversalRateReminder.rd.xml" />

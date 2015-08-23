@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RateReminderSample", "RateReminderSample", "{4C9BEEA8-0BF7-4B83-A271-1FFCD7438852}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateReminderSample.Windows", "RateReminderSample\RateReminderSample.Windows\RateReminderSample.Windows.csproj", "{128E53A5-1D3A-4924-8FA7-0089D3405464}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RateReminderSample.WindowsPhone", "RateReminderSample\RateReminderSample.WindowsPhone\RateReminderSample.WindowsPhone.csproj", "{7756D25E-9E18-4579-93C7-14D98F860E6F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalRateReminder", "..\..\UniversalRateReminder\UniversalRateReminder.csproj", "{062723A7-1125-4F53-80DF-BCCC91EADE10}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -74,16 +72,6 @@ Global
 		{7756D25E-9E18-4579-93C7-14D98F860E6F}.Release|x86.ActiveCfg = Release|x86
 		{7756D25E-9E18-4579-93C7-14D98F860E6F}.Release|x86.Build.0 = Release|x86
 		{7756D25E-9E18-4579-93C7-14D98F860E6F}.Release|x86.Deploy.0 = Release|x86
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Release|ARM.ActiveCfg = Release|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Release|x64.ActiveCfg = Release|Any CPU
-		{062723A7-1125-4F53-80DF-BCCC91EADE10}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
