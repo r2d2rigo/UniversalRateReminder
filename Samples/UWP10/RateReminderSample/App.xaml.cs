@@ -102,7 +102,7 @@ namespace RateReminderSample
                 FeedbackPopup.EmailBody = "Default body";
 
                 FeedbackPopup.Title = "Would you like to send feedback?";
-                FeedbackPopup.Content = "Maybe you want to send us feedback regarding your experience with the app?";
+                FeedbackPopup.Content = "Maybe you want to send us an email with feedback regarding your experience with the app?";
                 FeedbackPopup.SendFeedbackButtonText = "yes, send feedback";
                 FeedbackPopup.CancelButtonText = "no, thanks";
 
