@@ -163,7 +163,7 @@ namespace UniversalRateReminder
         }
         /// <summary>
         /// The message written in the feedback email. You can include the app version number and device info
-        // </summary>
+        /// </summary>
         public static string FeedbackEmailMessage 
         {
             get;
