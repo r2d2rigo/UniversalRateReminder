@@ -5,6 +5,7 @@ using Windows.ApplicationModel.Store;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
+using Windows.ApplicationModel.Email;
 
 namespace UniversalRateReminder
 {
@@ -117,7 +118,7 @@ namespace UniversalRateReminder
         }
 
         /// <summary>
-        /// The title for the rate pop up. The default value is "Rate us!".
+        /// The title for the feedback pop up. The default value is "Help us!".
         /// </summary>
         public static string FeedbackTitle
         {
@@ -126,7 +127,7 @@ namespace UniversalRateReminder
         }
 
         /// <summary>
-        /// The text content for the rate pop up. The default value is "Your feedback helps you improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.".
+        /// The text content for the feedback pop up. The default value is "Your feedback helps you improve this app. If you like it, please take a minute and tell us what we can improve.".
         /// </summary>
         public static string FeedbackContent
         {
@@ -142,6 +143,15 @@ namespace UniversalRateReminder
             get;
             set;
         }
+        
+        /// <summary>
+        /// The text for the feedback button. The default value is "send".
+        /// </summary>
+        public static string FeedbackButtonText
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The text for the cancel button. The default value is "no, thanks".
@@ -151,12 +161,25 @@ namespace UniversalRateReminder
             get;
             set;
         }
-        
-        public static string FeedbackMailAddress
+        /// <summary>
+        /// The message written in the feedback email. You can include the app version number and device info
+        // </summary>
+        public static string FeedbackEmailMessage 
         {
             get;
             set;
         }
+        
+        /// <summary>
+        /// The subject of the feedback email. The default value is "Feedback".
+        // </summary>
+        public static string FeedbackEmailSubject
+        {
+            get;
+            set;
+        }
+        
+        
 
         /// <summary>
         /// Static constructor for initializing default values.
@@ -167,6 +190,10 @@ namespace UniversalRateReminder
             Content = "Your feedback helps us improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
             RateButtonText = "rate 5 stars";
             CancelButtonText = "no, thanks";
+            FeedbackButtonText = "send":
+            FeedbackEmailSubject = "Feedback";
+            FeedbackTitle = "Help us!";
+            FeedbackContent="Your feedback helps you improve this app. If you like it, please take a minute and tell us what we can improve.";
             LaunchLimit = DefaultLaunchLimitForReminder;
 
             if (!ApplicationData.Current.LocalSettings.Containers.ContainsKey(UniversalRateReminderContainerName))
@@ -245,39 +272,36 @@ namespace UniversalRateReminder
 
                     var rateResult = await rateDialog.ShowAsync();
 
-                    if (rateResult == dismissCommand)
+                    if (rateResult == dismissCommand && AskForFeedback)
                     {
-                        MessageDialog feedbackDialog = new MessageDialog(Content, Title);
+                        MessageDialog feedbackDialog = new MessageDialog(FeedbackContent, FeedbackTitle);
 
-                        var rateCommand = new UICommand(RateButtonText, (command) =>
+                        var sendCommand = new UICommand(FeedbackButtonText, (command) =>
                         {
-#if WINDOWS_UWP
-                        Launcher.LaunchUriAsync(new Uri("mailto:" + FeedbackMailAddress));
-#else
-                            bool runningOnPhone = true;
-
-                            // Ugly hack for detecting running platform at runtime
-                            try
+                            EmailRecipient sendTo = new EmailRecipient()
                             {
-                                object brush = Windows.UI.Xaml.Application.Current.Resources["PhoneAccentBrush"];
-                            }
-                            catch (Exception e)
-                            {
-                                runningOnPhone = false;
-                            }
-
-                            if (runningOnPhone)
-                            {
-                                Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + CurrentApp.AppId));
-                            }
-                            else
-                            {
-                                Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
-                            }
-#endif
-                            reminderContainer.Values[DismissedPropertyName] = true;
+                            Address = ContactEmail;
+                            };
+                            //generate mail object
+                            EmailMessage mail = new EmailMessage();
+                            mail.Subject = FeedbackEmailSubject;
+                            //add recipients to the mail object
+                            mail.To.Add(sendTo);
+                            //open the share contract with Mail only:
+                            await EmailManager.ShowComposeNewEmailAsync(mail);
                         });
-
+                        
+                        var dismissCommand = new UICommand(CancelButtonText, (command) => 
+                        {
+                        });
+                        
+                        feedbackDialog.Commands.Add(sendCommand);
+                        feedbackDialog.Commands.Add(dismissCommand);
+                        
+                        feedbackDialog.CancelCommandIndex = 1;
+                        feedbackDialog.DefaultCommandIndex = 0;
+                        
+                        var feedbackResult = await feedbackDialog.ShowAsync();
                     }
                 }
             }
