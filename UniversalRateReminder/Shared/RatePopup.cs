@@ -172,13 +172,12 @@ namespace UniversalRateReminder
         
         /// <summary>
         /// The subject of the feedback email. The default value is "Feedback".
-        // </summary>
+        /// </summary>
         public static string FeedbackEmailSubject
         {
             get;
             set;
         }
-        
         
 
         /// <summary>
