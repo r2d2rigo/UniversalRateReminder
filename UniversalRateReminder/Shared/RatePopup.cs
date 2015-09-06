@@ -151,6 +151,12 @@ namespace UniversalRateReminder
             get;
             set;
         }
+        
+        public static string FeedbackMailAddress
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Static constructor for initializing default values.
@@ -200,7 +206,7 @@ namespace UniversalRateReminder
                     var rateCommand = new UICommand(RateButtonText, (command) =>
                     {
 #if WINDOWS_UWP
-                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?productid=" + Package.Current.Id.FamilyName));
+                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName));
 #else
                         bool runningOnPhone = true;
 
@@ -246,7 +252,7 @@ namespace UniversalRateReminder
                         var rateCommand = new UICommand(RateButtonText, (command) =>
                         {
 #if WINDOWS_UWP
-                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?productid=" + Package.Current.Id.FamilyName));
+                        Launcher.LaunchUriAsync(new Uri("mailto:" + FeedbackMailAddress));
 #else
                             bool runningOnPhone = true;
 
