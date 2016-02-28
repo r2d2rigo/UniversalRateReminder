@@ -155,7 +155,7 @@ namespace UniversalRateReminder
                         {
                             object brush = Windows.UI.Xaml.Application.Current.Resources["PhoneAccentBrush"];
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             runningOnPhone = false;
                         }
