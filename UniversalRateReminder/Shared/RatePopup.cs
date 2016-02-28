@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Store;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
