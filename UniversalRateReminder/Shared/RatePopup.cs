@@ -126,7 +126,7 @@ namespace UniversalRateReminder
             Title = DefaultTitle;
             Content = DefaultContent;
             RateButtonText = DefaultRateButtonText;
-            CancelButtonText = defa;
+            CancelButtonText = DefaultCancelButtonText;
             LaunchLimit = DefaultLaunchLimitForReminder;
 
             if (!ApplicationData.Current.LocalSettings.Containers.ContainsKey(UniversalRateReminderContainerName))
@@ -167,7 +167,7 @@ namespace UniversalRateReminder
                     {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 #if WINDOWS_UWP
-                        Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=" + Package.Current.Id.FamilyName));
+                        Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
 #else
                         bool runningOnPhone = true;
 
