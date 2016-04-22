@@ -130,6 +130,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\UniversalRateReminder\UWP10\UniversalRateReminder.UWP10.csproj">
+      <Project>{2b825784-b452-4122-ae59-b110202464f9}</Project>
+      <Name>UniversalRateReminder.UWP10</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

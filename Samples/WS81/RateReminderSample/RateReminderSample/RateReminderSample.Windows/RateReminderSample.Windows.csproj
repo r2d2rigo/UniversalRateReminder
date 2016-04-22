@@ -126,12 +126,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="UniversalRateReminder, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b2d2ee1bf4d541d5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\UniversalRateReminder.2.0.0\lib\portable-netcore451+wpa81\UniversalRateReminder.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
