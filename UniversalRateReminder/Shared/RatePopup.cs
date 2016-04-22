@@ -118,7 +118,7 @@ namespace UniversalRateReminder
         }
 
         /// <summary>
-        /// Increments the launch counter and if it is equal or greater than the current value of <see cref="RatePopup.LaunchCount"/>, shows the rating pop up. A flag will be set
+        /// Increments the launch counter and if it is equal or less than the current value of <see cref="RatePopup.LaunchLimit"/>, shows the rating pop up. A flag will be set
         /// so the dialog only shows once.
         /// </summary>
         public static async Task<RateReminderResult> CheckRateReminderAsync()
@@ -145,6 +145,7 @@ namespace UniversalRateReminder
 
                     var rateCommand = new UICommand(RateButtonText, (command) =>
                     {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 #if WINDOWS_UWP
                         Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
 #else
@@ -155,7 +156,7 @@ namespace UniversalRateReminder
                         {
                             object brush = Windows.UI.Xaml.Application.Current.Resources["PhoneAccentBrush"];
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             runningOnPhone = false;
                         }
@@ -169,6 +170,7 @@ namespace UniversalRateReminder
                             Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=" + Package.Current.Id.FamilyName));
                         }
 #endif
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         reminderContainer.Values[DismissedPropertyName] = true;
                     });
 
@@ -176,7 +178,7 @@ namespace UniversalRateReminder
                     {
                         reminderContainer.Values[DismissedPropertyName] = true;
                     });
-                    
+
                     rateDialog.Commands.Add(rateCommand);
                     rateDialog.Commands.Add(dismissCommand);
 

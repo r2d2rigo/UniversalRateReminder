@@ -5,8 +5,11 @@ namespace UniversalRateReminder
     /// </summary>
     public enum RateReminderResult
     {
+        /// <summary>Not shown</summary>
         NotShown,
+        /// <summary>Rated</summary>
         Rated,
+        /// <summary>Dismissed</summary>
         Dismissed,
     }
 }
