@@ -125,7 +125,7 @@
       <Link>RateReminderResult.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Properties\UniversalRateReminder.rd.xml" />
+    <EmbeddedResource Include="Properties\UniversalRateReminder.rd.xml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
