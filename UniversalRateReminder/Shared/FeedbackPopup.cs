@@ -21,6 +21,16 @@ namespace UniversalRateReminder
         private const string DefaultContent = "We are sorry you don't want to rate the application. Would you like to send us an email with some valuable feedback?";
 
         /// <summary>
+        /// Default text for "send feedback" button;
+        /// </summary>
+        private const string DefaultSendFeedbackButtonText = "send feedback";
+
+        /// <summary>
+        /// Default text for "cancel" button;
+        /// </summary>
+        private const string DefaultCancelButtonText = "no, thanks";
+
+        /// <summary>
         /// The title for the feedback pop up. The default value is <see cref="FeedbackPopup.DefaultTitle"/>.
         /// </summary>
         public static string Title
@@ -90,8 +100,8 @@ namespace UniversalRateReminder
         {
             Title = DefaultTitle;
             Content = DefaultContent;
-            SendFeedbackButtonText = "rate 5 stars";
-            CancelButtonText = "no, thanks";
+            SendFeedbackButtonText = DefaultSendFeedbackButtonText;
+            CancelButtonText = DefaultCancelButtonText;
             ContactEmail = string.Empty;
             EmailSubject = string.Empty;
             EmailBody = string.Empty;

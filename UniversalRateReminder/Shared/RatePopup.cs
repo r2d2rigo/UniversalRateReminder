@@ -14,6 +14,26 @@ namespace UniversalRateReminder
     public static class RatePopup
     {
         /// <summary>
+        /// Default title for rate pop up.
+        /// </summary>
+        private const string DefaultTitle = "Rate us!";
+
+        /// <summary>
+        /// Default content for rate pop up.
+        /// </summary>
+        private const string DefaultContent = "Your feedback helps us improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
+
+        /// <summary>
+        /// Default text for "rate" button;
+        /// </summary>
+        private const string DefaultRateButtonText = "rate 5 stars";
+
+        /// <summary>
+        /// Default text for "cancel" button;
+        /// </summary>
+        private const string DefaultCancelButtonText = "no, thanks";
+
+        /// <summary>
         /// Name of the container for holding the settings.
         /// </summary>
         private static readonly string UniversalRateReminderContainerName = "UniversalRateReminder";
@@ -103,10 +123,10 @@ namespace UniversalRateReminder
         /// </summary>
         static RatePopup()
         {
-            Title = "Rate us!";
-            Content = "Your feedback helps us improve this app. If you like it, please take a minute and rate it with five stars so we can continue working on new features and updates.";
-            RateButtonText = "rate 5 stars";
-            CancelButtonText = "no, thanks";
+            Title = DefaultTitle;
+            Content = DefaultContent;
+            RateButtonText = DefaultRateButtonText;
+            CancelButtonText = DefaultCancelButtonText;
             LaunchLimit = DefaultLaunchLimitForReminder;
 
             if (!ApplicationData.Current.LocalSettings.Containers.ContainsKey(UniversalRateReminderContainerName))
